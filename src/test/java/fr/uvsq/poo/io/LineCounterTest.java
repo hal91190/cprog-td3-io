@@ -13,6 +13,7 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.Collections;
 
+import static java.nio.file.Files.newBufferedReader;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -33,7 +34,7 @@ public class LineCounterTest {
 
     @Test
     public void withLineNumberReader() throws IOException {
-        LineNumberReader lnr = new LineNumberReader(new FileReader(file.toFile()));
+        LineNumberReader lnr = new LineNumberReader(newBufferedReader(file));
         while (lnr.readLine() != null) ;
         assertEquals(NB_LINES, lnr.getLineNumber());
     }
