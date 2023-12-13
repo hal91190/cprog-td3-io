@@ -64,6 +64,10 @@ public class ParsedCommandLine {
         return cmdLine.hasOption("h");
     }
 
+    public boolean hasLineNumbers() {
+        return cmdLine.hasOption("n");
+    }
+
     public String getPattern() throws IOException {
         String stringPattern;
         if (cmdLine.hasOption("e")) {

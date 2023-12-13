@@ -24,7 +24,16 @@ public enum CharStreamDemo {
         } else {
             Pattern pattern = Pattern.compile(parsedCommandLine.getPattern(), parsedCommandLine.isCaseSensitive());
             GrepReader grepReader = new GrepReader(newBufferedReader(parsedCommandLine.getPath()), pattern);
-            grepReader.lines().forEach(System.out::println);
+            while ((grepReader.readLine()) != null) ; // consume the stream
+            if (parsedCommandLine.hasLineNumbers()) {
+                grepReader.getMatchesWithIndexes().stream()
+                        .map(i -> String.format("%5s\t%s", i.getIndex(), i.getValue()))
+                        .forEach(System.out::println);
+            } else {
+                grepReader.getMatchesWithIndexes().stream()
+                        .map(i -> i.getValue())
+                        .forEach(System.out::println);
+            }
         }
     }
 

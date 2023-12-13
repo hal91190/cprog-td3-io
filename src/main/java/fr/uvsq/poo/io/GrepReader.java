@@ -1,8 +1,13 @@
 package fr.uvsq.poo.io;
 
+import com.codepoetics.protonpack.Indexed;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -15,6 +20,10 @@ public class GrepReader extends BufferedReader {
      */
     private final Pattern pattern;
 
+    private List<Indexed<String>> matches;
+
+    private long currentLineNumber;
+
     /**
      * Build the stream from another stream and a regex pattern.
      *
@@ -24,6 +33,7 @@ public class GrepReader extends BufferedReader {
     protected GrepReader(Reader in, Pattern pattern) {
         super(in);
         this.pattern = pattern;
+        matches = new ArrayList<>();
     }
 
     /**
@@ -36,8 +46,16 @@ public class GrepReader extends BufferedReader {
     public String readLine() throws IOException {
         String currentLine;
         while ((currentLine = super.readLine()) != null) {
-            if (pattern.matcher(currentLine).find()) return currentLine;
+            currentLineNumber++;
+            if (pattern.matcher(currentLine).find()) {
+                matches.add(Indexed.index(currentLineNumber, currentLine));
+                return currentLine;
+            }
         }
         return null;
+    }
+
+    public List<Indexed<String>> getMatchesWithIndexes() {
+        return Collections.unmodifiableList(matches);
     }
 }

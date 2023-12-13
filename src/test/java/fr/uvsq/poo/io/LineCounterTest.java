@@ -4,18 +4,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.nio.file.Files;
-import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.Collections;
 
 import static java.nio.file.Files.newBufferedReader;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 public class LineCounterTest {
     public static final String DUMMY_STRING = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
