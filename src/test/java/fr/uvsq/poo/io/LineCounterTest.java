@@ -30,7 +30,7 @@ public class LineCounterTest {
 
     @Test
     public void withLineNumberReader() throws IOException {
-        LineNumberReader lnr = new LineNumberReader(newBufferedReader(file));
+        var lnr = new LineNumberReader(newBufferedReader(file));
         while (lnr.readLine() != null) ;
         assertEquals(NB_LINES, lnr.getLineNumber());
     }

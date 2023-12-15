@@ -6,14 +6,30 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
+/**
+ * A class to represent the command line when parsed.
+ */
 public class ParsedCommandLine {
-    private Options cliOptions;
+    /**
+     * Display name of the app.
+     */
+    public static final String APP_NAME = "mygrep";
 
-    private CommandLine cmdLine;
+    /**
+     * Command line options.
+     */
+    private final Options cliOptions;
+
+    /**
+     * The command line after parsing.
+     */
+    private final CommandLine cmdLine;
 
     /**
      * Parse the command line.
@@ -37,7 +53,7 @@ public class ParsedCommandLine {
      * @return true is the command line is valid
      */
     public boolean isValid() {
-        List<String> parsedAndLeftOverArgs = cmdLine.getArgList();
+        var parsedAndLeftOverArgs = cmdLine.getArgList();
         // only -e or -f are allowed, not both
         if (cmdLine.hasOption("e") && cmdLine.hasOption("f")) return false;
         // a command line with -e must have an argument for -e and a filename
@@ -57,34 +73,58 @@ public class ParsedCommandLine {
      */
     public void printHelp() {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("mygrep", cliOptions, true);
+        formatter.printHelp(APP_NAME, cliOptions, true);
     }
 
+    /**
+     * Is the help option present on the CLI ?
+     * @return true if the help option is present on the CLI.
+     */
     public boolean hasHelp() {
         return cmdLine.hasOption("h");
     }
 
+    /**
+     * Does line numbers have to be printed ?
+     * @return true if line numbers have to be printed
+     */
     public boolean hasLineNumbers() {
         return cmdLine.hasOption("n");
     }
 
-    public String getPattern() throws IOException {
-        String stringPattern;
+    /**
+     * Get the pattern as a string.
+     * @return the pattern
+     */
+    public Optional<String> getPattern() {
+        String stringPattern = null;
         if (cmdLine.hasOption("e")) {
             stringPattern = cmdLine.getOptionValue("e");
         } else if (cmdLine.hasOption("f")) {
-            Path patternsFile = Path.of(cmdLine.getOptionValue("f"));
-            stringPattern = Files.lines(patternsFile).collect(Collectors.joining(")|(", "(", ")"));
+            var patternsFile = Path.of(cmdLine.getOptionValue("f"));
+            try (Stream<String> lines = Files.lines(patternsFile)) {
+                stringPattern = lines.collect(Collectors.joining(")|(", "(", ")"));
+            } catch (IOException e) {
+                System.err.println("I/O error reading the pattern file");
+            }
         } else {
             stringPattern = cmdLine.getArgs()[0];
         }
-        return stringPattern;
+        return stringPattern == null ? Optional.empty() : Optional.of(stringPattern);
     }
 
-    public int isCaseSensitive() {
+    /**
+     * Get the flags for the pattern compilation (case sensitive)
+     * @return the flags for compiling the pattern
+     */
+    public int getPatternFlags() {
         return cmdLine.hasOption("i") ? CASE_INSENSITIVE : 0;
     }
 
+    /**
+     * Path to the file to analyze.
+     * @return the Path to the file to analyse
+     */
     public Path getPath() {
         return Path.of(cmdLine.getArgs()[cmdLine.hasOption("e") || cmdLine.hasOption("f") ? 0 : 1]);
     }

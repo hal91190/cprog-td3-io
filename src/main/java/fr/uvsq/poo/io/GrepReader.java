@@ -1,7 +1,8 @@
 package fr.uvsq.poo.io;
 
-import com.codepoetics.protonpack.Indexed;
+//TODO remove dependency with protonpack by reimplementing Indexed
 
+import com.codepoetics.protonpack.Indexed;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -20,14 +21,14 @@ public class GrepReader extends BufferedReader {
      */
     private final Pattern pattern;
 
-    private List<Indexed<String>> matches;
+    private final List<Indexed<String>> matches;
 
     private long currentLineNumber;
 
     /**
      * Build the stream from another stream and a regex pattern.
      *
-     * @param in Reader stream
+     * @param in      Reader stream
      * @param pattern a regex pattern
      */
     protected GrepReader(Reader in, Pattern pattern) {
@@ -40,7 +41,7 @@ public class GrepReader extends BufferedReader {
      * Return the next line matching the pattern.
      *
      * @return the next line matching the pattern
-     * @throws IOException
+     * @throws IOException If an I/O error occurs
      */
     @Override
     public String readLine() throws IOException {
@@ -55,6 +56,11 @@ public class GrepReader extends BufferedReader {
         return null;
     }
 
+    /**
+     * Get all lines matching the pattern with line numbers.
+     *
+     * @return a list of couple (line number, line) matching the pattern
+     */
     public List<Indexed<String>> getMatchesWithIndexes() {
         return Collections.unmodifiableList(matches);
     }

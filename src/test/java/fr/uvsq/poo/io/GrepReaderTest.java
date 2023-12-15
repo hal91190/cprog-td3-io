@@ -43,47 +43,47 @@ public class GrepReaderTest {
 
     @Test
     public void shouldFindNothing() throws IOException {
-        String searchString = "NOT FOUND";
-        GrepReader reader = new GrepReader(newBufferedReader(file), Pattern.compile(searchString));
-        List<String> found = reader.lines().toList();
+        var searchString = "NOT FOUND";
+        var reader = new GrepReader(newBufferedReader(file), Pattern.compile(searchString));
+        var found = reader.lines().toList();
         assertTrue(found.isEmpty());
     }
 
     @Test
     public void shouldFilterTwoLinesMatchingASimplePattern() throws IOException {
-        List<String> expected = List.of(
+        var expected = List.of(
                 "Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue.",
                 "Pellentesque sed dui ut augue blandit sodales."
         );
-        String searchString = "Pellentesque";
-        GrepReader reader = new GrepReader(newBufferedReader(file), Pattern.compile(searchString));
-        List<String> found = reader.lines().toList();
+        var searchString = "Pellentesque";
+        var reader = new GrepReader(newBufferedReader(file), Pattern.compile(searchString));
+        var found = reader.lines().toList();
         assertEquals(expected, found);
     }
 
     @Test
     public void shouldFilterLinesMatchingThePattern() throws IOException {
-        List<String> expected = List.of(
+        var expected = List.of(
                 "Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat.",
                 "Praesent egestas leo in pede.",
                 "Praesent blandit odio eu enim."
         );
-        String searchString = "^Pr[ao]";
-        GrepReader reader = new GrepReader(newBufferedReader(file), Pattern.compile(searchString));
-        List<String> found = reader.lines().toList();
+        var searchString = "^Pr[ao]";
+        var reader = new GrepReader(newBufferedReader(file), Pattern.compile(searchString));
+        var found = reader.lines().toList();
         assertEquals(expected, found);
     }
 
     @Test
     public void shouldFilterTwoLinesMatchingASimplePatternCaseInsensitive() throws IOException {
-        List<String> expected = List.of(
+        var expected = List.of(
                 "Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue.",
                 "Pellentesque sed dui ut augue blandit sodales.",
                 "Mauris ac mauris sed pede pellentesque fermentum."
         );
-        String searchString = "Pellentesque";
-        GrepReader reader = new GrepReader(newBufferedReader(file), Pattern.compile(searchString, Pattern.CASE_INSENSITIVE));
-        List<String> found = reader.lines().toList();
+        var searchString = "Pellentesque";
+        var reader = new GrepReader(newBufferedReader(file), Pattern.compile(searchString, Pattern.CASE_INSENSITIVE));
+        var found = reader.lines().toList();
         assertEquals(expected, found);
     }
 }

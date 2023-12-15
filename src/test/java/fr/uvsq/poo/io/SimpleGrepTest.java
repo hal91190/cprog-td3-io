@@ -1,5 +1,7 @@
 package fr.uvsq.poo.io;
 
+import com.codepoetics.protonpack.Indexed;
+import com.codepoetics.protonpack.StreamUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -7,12 +9,8 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.codepoetics.protonpack.Indexed;
-import com.codepoetics.protonpack.StreamUtils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -46,12 +44,12 @@ public class SimpleGrepTest {
 
     @Test
     public void simpleGrep() throws IOException {
-        List<Indexed<String>> expected = List.of(
+        var expected = List.of(
                 Indexed.index(1, "Sed non risus. Suspendisse TROUVÉ lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor."),
                 Indexed.index(4, "Duis semper. Duis arcu massa, scelerisque TROUVÉ vitae, consequat in, pretium a, enim. Pellentesque congue."),
                 Indexed.index(9, "Vestibulum ante ipsum primis in faucibus orci luctus TROUVÉ et ultrices posuere cubilia Curae; Aliquam nibh.")
         );
-        List<Indexed<String>> found = StreamUtils
+        var found = StreamUtils
                 .zipWithIndex(Files.lines(file))
                 .filter(i -> i.getValue().contains(SEARCH_STRING))
                 .collect(Collectors.toList());
